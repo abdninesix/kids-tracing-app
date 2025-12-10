@@ -35,7 +35,7 @@ export default function Home() {
         {/* Start Button: Soft Cyan button with Dark Indigo Text */}
         <button
           onClick={() => navigate("/categories")}
-          className="w-full px-8 py-4 text-2xl font-bold bg-indigo-900 text-[#bdf4ff] rounded-xl shadow-lg shadow-cyan-300/70 
+          className="w-full px-8 py-4 text-2xl font-bold bg-indigo-900 text-white rounded-xl shadow-lg shadow-cyan-300/70 
                      hover:bg-indigo-900 transition duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#c4f6ff]"
         >
           Start Tracing!     

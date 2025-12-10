@@ -1,172 +1,74 @@
-import React, { useRef, useState, useEffect } from "react";
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
+import TracingCanvas from "../components/TracingCanvas";
+
+const ALPHABETS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 export default function TracePage() {
-  const { letter } = useParams();
-  const navigate = useNavigate();
-  const canvasRef = useRef(null);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [points, setPoints] = useState([]);
+    const { letter: currentLetterParam } = useParams();
+    const navigate = useNavigate();
 
-  // --- Drawing Logic ---
-  useEffect(() => {
-    drawDottedLetter();
-  }, [letter]);
+    const currentLetter = currentLetterParam ? currentLetterParam.toUpperCase() : 'A';
+    const currentIndex = ALPHABETS.indexOf(currentLetter);
 
-  const getPosition = (e) => {
-    const rect = canvasRef.current.getBoundingClientRect();
-    if (e.touches) {
-      return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
-    }
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-  };
-
-  const startDrawing = (e) => {
-    setIsDrawing(true);
-    const pos = getPosition(e);
-    setPoints([{ x: pos.x, y: pos.y }]);
-  };
-
-  const stopDrawing = () => {
-    setIsDrawing(false);
-  };
-
-  const draw = (e) => {
-    if (!isDrawing) return;
-    const ctx = canvasRef.current.getContext("2d");
-    ctx.lineWidth = 10;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#4F46E5"; 
-
-    const newPos = getPosition(e);
-    const newPoints = [...points, newPos];
-    setPoints(newPoints);
-
-    ctx.beginPath();
-    ctx.moveTo(points[points.length - 1].x, points[points.length - 1].y);
-    ctx.lineTo(newPos.x, newPos.y);
-    ctx.stroke();
-  };
-
-  const drawDottedLetter = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.font = "250px Arial";
-    ctx.lineWidth = 4;
-    ctx.setLineDash([12, 20]);
-    ctx.strokeStyle = "gray";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.strokeText(letter.toUpperCase(), canvas.width / 2, canvas.height / 2);
-    ctx.setLineDash([]);
-  };
-
-  const checkDrawing = () => {
-    if (points.length < 50) {
-      Swal.fire({
-        title: "Too Short!",
-        text: "Please try to trace the letter properly.",
-        icon: "error",
-        confirmButtonText: "Try Again",
-      });
-      drawDottedLetter();
-      setPoints([]);
-      return;
-    }
-
-    Swal.fire({
-      title: "Fantastic Job!",
-      text: `You successfully traced '${letter.toUpperCase()}'!`,
-      icon: "success",
-      confirmButtonText: "Continue",
-    });
-  };
-
-  const handleClear = () => {
-    drawDottedLetter();
-    setPoints([]);
-    Swal.fire({
-      toast: true,
-      position: 'top-end',
-      icon: 'info',
-      title: 'Cleared!',
-      showConfirmButton: false,
-      timer: 1500
-    })
-  }
-
-  // --- UI START (Themed) ---
-
-  return (
-    // Background: Deep Indigo/Violet for better focus contrast
-    <div className="min-h-screen  bg-gradient-to-br from-[#d3c8ff] via-[#d8f3ff] to-[#e8e1ff]  p-4 sm:p-8 flex flex-col items-center">
-      
-      <header className="text-center mb-8">
-        <h1 className="text-6xl font-extrabold text-indigo-900 tracking-wider drop-shadow-lg">
-          Trace the Letter 
-          <span className="text-cyan-400 ml-3">
-             {letter.toUpperCase()}!
-          </span>
-        </h1>
-        <p className="text-xl text-violet-700 opacity-80 mt-2">
-          Use your finger or mouse to follow the dots.
-        </p>
-      </header>
-      
-      {/* Canvas Area: Warm White Canvas with Soft Cyan Border */}
-      <div className="relative bg-white shadow-3xl rounded-3xl overflow-hidden border-8 border-cyan-400">
-          <canvas
-            ref={canvasRef}
-            width={350}
-            height={300}
-            className="touch-none"
-            onMouseDown={startDrawing}
-            onMouseUp={stopDrawing}
-            onMouseMove={draw}
-            onMouseLeave={stopDrawing}
-            onTouchStart={startDrawing}
-            onTouchMove={draw}
-            onTouchEnd={stopDrawing}
-          />
-      </div>
-
-      {/* Control Buttons */}
-      <div className="flex flex-wrap justify-center gap-4 mt-8 w-full max-w-lg">
+    const handleNavigation = (direction) => {
+        let newIndex;
+        if (direction === 'next') {
+            newIndex = (currentIndex + 1) % ALPHABETS.length;
+        } else if (direction === 'prev') {
+            newIndex = (currentIndex - 1 + ALPHABETS.length) % ALPHABETS.length; 
+        } else {
+            return;
+        }
         
-        {/* Clear Button (Emoji Removed) */}
-        <button
-          onClick={handleClear}
-          className="flex-1 px-6 py-3 bg-red-500 text-white font-bold rounded-xl shadow-lg 
-                     hover:bg-red-600 transition duration-300 transform hover:scale-105"
-        >
-          Clear
-        </button>
+        const nextLetter = ALPHABETS[newIndex];
+        navigate(`/trace/${nextLetter}`);
+    };
 
-        {/* Check Button: Soft Cyan Accent (Emoji Removed) */}
-        <button
-          onClick={checkDrawing}
-          className="flex-1 px-6 py-3 bg-cyan-400 text-indigo-900 font-bold rounded-xl shadow-lg 
-                     hover:bg-cyan-300 transition duration-300 transform hover:scale-105"
-        >
-          Check My Trace
-        </button>
-      </div>
+    const handleBack = () => {
+        // Path changed to /categories to match Home page logic
+        navigate('/categories'); 
+    };
 
-      {/* Navigation Button */}
-      <div className="mt-6">
-        <button
-          onClick={() => navigate("/letters")}
-          className="px-6 py-3 bg-indigo-500 text-white rounded-lg shadow-md hover:bg-indigo-600 transition font-medium"
-        >
-          ← Back to Alphabets
-        </button>
-      </div>
+    return (
+        // Consistent Gradient Background
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#d3c8ff] via-[#d8f3ff] to-[#e8e1ff] p-4">
+            
+            {/* Back to Letters Button - Elegant White/Indigo Styling */}
+            <div className="w-full max-w-sm mb-6 flex justify-between">
+                <button
+                    onClick={handleBack}
+                    className="flex items-center text-indigo-700 hover:text-indigo-900 font-semibold bg-white p-3 rounded-xl shadow-md transition duration-150 transform hover:scale-[1.02] active:scale-[0.98]"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    Back to Letters
+                </button>
+            </div>
 
-    </div>
-  );
+            {/* Tracing Canvas */}
+            <TracingCanvas letter={currentLetter} width={350} height={350} />
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between w-full max-w-sm mt-4">
+                
+                {/* Previous Button - Theme: Bright Pink */}
+                <button
+                    onClick={() => handleNavigation('prev')}
+                    className="px-4 py-3 bg-pink-500 text-white font-extrabold rounded-xl shadow-lg shadow-pink-300/70 hover:bg-pink-600 transition duration-150 transform hover:scale-105 active:scale-95 flex-grow mr-3"
+                >
+                    &larr; Previous
+                </button>
+                
+                {/* Next Button - Theme: Bright Cyan */}
+                <button
+                    onClick={() => handleNavigation('next')}
+                    className="px-6 py-3 bg-cyan-500 text-white font-extrabold rounded-xl shadow-lg shadow-cyan-300/70 hover:bg-cyan-600 transition duration-150 transform hover:scale-105 active:scale-95 flex-grow ml-3"
+                >
+                    Next &rarr;
+                </button>
+            </div>
+        </div>
+    );
 }
