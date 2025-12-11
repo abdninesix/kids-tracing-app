@@ -1,52 +1,42 @@
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
   const navigate = useNavigate();
 
   return (
-    // Main Container: Soft Pastel Gradient Background (Using your provided colors)
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#d3c8ff] via-[#d8f3ff] to-[#e8e1ff] p-4">
-      
-      <header className="mb-12 text-center">
-        {/* H1: Dark Violet/Indigo Text for contrast against light background */}
-        <h1 className="text-7xl font-extrabold text-indigo-900 mb-2 tracking-wide drop-shadow-md">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-200 via-cyan-100 to-purple-200 p-6">
+      <header className="text-center mb-12">
+        <h1 className="text-6xl md:text-8xl font-extrabold text-indigo-900 tracking-tight drop-shadow-lg">
           Fun Tracing World!
         </h1>
-        {/* Subtext: Deep color for good readability */}
-        <p className="text-2xl font-medium text-violet-700">
+        <p className="text-2xl text-indigo-700 font-medium mt-3">
           Let's learn and trace!
         </p>
       </header>
 
-      {/* Main Content Card: Warm White (bg-white/90) with Deep Shadow */}
-      <div className="bg-white/90 backdrop-blur-sm p-10 rounded-3xl shadow-2xl shadow-indigo-300 max-w-lg w-full text-center">
-        
+      <div className="bg-white p-10 rounded-3xl shadow-2xl max-w-sm w-full flex flex-col items-center">
+        {/* Pencil Icon (Image reference) */}
         <div className="mb-6">
-          {/* Icon: Deep Violet for visibility */}
-          <span className="text-8xl text-indigo-700" role="img" aria-label="Pencil and Ruler">
-            ✍️
-          </span>
+            <span className="text-8xl">✏️</span>
         </div>
-
-        <h2 className="text-4xl font-bold text-gray-800 mb-6">
+        
+        <h2 className="text-3xl font-semibold text-gray-700 mb-6">
           Ready to Start?
         </h2>
-
-        {/* Start Button: Soft Cyan button with Dark Indigo Text */}
+        
         <button
           onClick={() => navigate("/categories")}
-          className="w-full px-8 py-4 text-2xl font-bold bg-indigo-900 text-white rounded-xl shadow-lg shadow-cyan-300/70 
-                     hover:bg-indigo-900 transition duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-[#c4f6ff]"
+          className="w-full px-8 py-4 bg-violet-600 text-white font-bold text-xl rounded-xl shadow-lg shadow-violet-400/50 
+                     hover:bg-violet-700 transition duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
         >
-          Start Tracing!     
+          Start Tracing!
         </button>
+        
+        <p className="text-sm text-gray-500 mt-6">
+          Trace Letters, Numbers, and More!
+        </p>
       </div>
-
-      {/* Footer: Dark Indigo Text on light background for readability */}
-      <footer className="mt-8 text-indigo-800 text-lg opacity-80">
-        Trace Letters, Numbers, and More!
-      </footer>
-      
     </div>
   );
 }
