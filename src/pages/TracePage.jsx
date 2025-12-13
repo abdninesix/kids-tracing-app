@@ -1,7 +1,8 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import TracingCanvas from "../components/TracingCanvas";
-import { getTracingData } from "../data/TracingData"; // Import data
+import { getTracingData } from "../data/TracingData";
+import NavBar from "../components/Navbar";
 
 export default function TracePage() {
     // Nayi routing se parameters fetch karein
@@ -17,9 +18,20 @@ export default function TracePage() {
 
     const { categoryTitle, currentItem, nextItem, prevItem, backPath } = tracingData;
 
+    const formatItemForUrl = (itemToFormat) => {
+        // 'numbers' aur 'urdu' ko jaisa hai waise hi rakhein (no case change)
+        if (categoryId === 'numbers' || categoryId === 'urdu') {
+            return itemToFormat;
+        }
+        // 'letters' (A, B) aur 'shapes' (Circle) ko URL mein lowercase chahiye
+        return itemToFormat.toLowerCase();
+    };
+    
+    // Updated Navigation Handler
     const handleNavigation = (newItem) => {
+        const urlItem = formatItemForUrl(newItem);
         // Naye item aur category ke saath navigate karein
-        navigate(`/trace/${categoryId}/${newItem.toLowerCase()}`);
+        navigate(`/trace/${categoryId}/${urlItem}`);
     };
 
     const handleBack = () => {
@@ -30,40 +42,36 @@ export default function TracePage() {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-[#d3c8ff] via-[#d8f3ff] to-[#e8e1ff] p-4">
             
-            {/* Back Button */}
-            <div className="w-full max-w-sm mb-6 flex justify-start">
-                <button
-                    onClick={handleBack}
-                    className="flex items-center text-indigo-700 hover:text-indigo-900 font-semibold bg-white p-3 rounded-xl shadow-md transition duration-150 transform hover:scale-[1.02] active:scale-[0.98]"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    Back to {categoryTitle}s
-                </button>
-            </div>
+            <NavBar themeColor="text-indigo-800" backPath={backPath}/>
 
-            {/* Tracing Canvas */}
-            <h1 className="text-4xl font-extrabold text-indigo-800 tracking-tight drop-shadow-md mb-4">
-                Trace the {categoryTitle} {currentItem}!
+            {/* Back Button - Ab sirf NavBar mein hai. Agar aapko bottom mein alag se chahiye, toh yeh block waapas la sakte hain. */}
+            
+            <h1 className="text-4xl font-extrabold text-indigo-800 tracking-tight drop-shadow-md mt-4 mb-4">
+                Trace the {categoryTitle} {currentItem}
             </h1>
             <TracingCanvas item={currentItem} categoryId={categoryId} width={350} height={350} />
 
-            {/* Navigation Buttons */}
-            <div className="flex justify-between w-full max-w-sm mt-4">
+            {/* Navigation Buttons (Prev/Next) - Enhanced for professional look */}
+            <div className="flex justify-between w-full max-w-sm mt-8">
                 
                 <button
                     onClick={() => handleNavigation(prevItem)}
-                    className="px-4 py-3 bg-pink-500 text-white font-extrabold rounded-xl shadow-lg shadow-pink-300/70 hover:bg-pink-600 transition duration-150 transform hover:scale-105 active:scale-95 flex-grow mr-3"
+                    className="flex items-center justify-center px-4 py-3 bg-pink-500 text-white font-extrabold rounded-xl shadow-lg shadow-pink-300/70 hover:bg-pink-600 transition duration-150 transform hover:scale-105 active:scale-95 flex-1 mr-3 min-w-0"
                 >
-                    &larr; {prevItem}
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span className="truncate">{prevItem}</span>
                 </button>
                 
                 <button
                     onClick={() => handleNavigation(nextItem)}
-                    className="px-6 py-3 bg-cyan-500 text-white font-extrabold rounded-xl shadow-lg shadow-cyan-300/70 hover:bg-cyan-600 transition duration-150 transform hover:scale-105 active:scale-95 flex-grow ml-3"
+                    className="flex items-center justify-center px-4 py-3 bg-cyan-500 text-white font-extrabold rounded-xl shadow-lg shadow-cyan-300/70 hover:bg-cyan-600 transition duration-150 transform hover:scale-105 active:scale-95 flex-1 ml-3 min-w-0"
                 >
-                    {nextItem} &rarr;
+                    <span className="truncate">{nextItem}</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
+                    </svg>
                 </button>
             </div>
         </div>

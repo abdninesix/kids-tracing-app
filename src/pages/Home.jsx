@@ -7,10 +7,10 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-200 via-cyan-100 to-purple-200 p-6">
       <header className="text-center mb-12">
-        <h1 className="text-6xl md:text-8xl font-extrabold text-indigo-900 tracking-tight drop-shadow-lg">
+        <h1 className="text-5xl md:text-8xl font-extrabold text-indigo-900 tracking-tight drop-shadow-lg">
           Fun Tracing World!
         </h1>
-        <p className="text-2xl text-indigo-700 font-medium mt-3">
+        <p className="text-2xl text-indigo-700 font-medium mt-5">
           Let's learn and trace!
         </p>
       </header>
@@ -27,8 +27,8 @@ export default function Home() {
         
         <button
           onClick={() => navigate("/categories")}
-          className="w-full px-8 py-4 bg-violet-600 text-white font-bold text-xl rounded-xl shadow-lg shadow-violet-400/50 
-                     hover:bg-violet-700 transition duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full px-8 py-4 bg-indigo-900 text-white font-bold text-xl rounded-xl shadow-lg shadow-violet-400/50 
+                     hover:bg-indigo-600 transition duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
         >
           Start Tracing!
         </button>

@@ -2,61 +2,69 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import TracingCard from '../components/TracingCard';
 import { TRACING_ITEMS } from '../data/TracingData'; 
+import NavBar from '../components/Navbar'; // NavBar import karein
 
-const getCompletedItems = () => {
-    // Dummy completion status for Shapes
-    return ['Circle', 'Star']; 
-};
+// Shapes ke liye multiple colors ka array define karein
+// Yeh colors aapki image (Pink, Orange, Purple) se milte julte hain.
+const SHAPE_COLORS = [
+    "bg-pink-600 hover:bg-pink-700",       // Pink (like Circle)
+    "bg-orange-600 hover:bg-orange-700",   // Orange (like Diamond, Square, Star)
+    "bg-purple-600 hover:bg-purple-700",   // Purple (like Triangle)
+    "bg-fuchsia-600 hover:bg-fuchsia-700", // Extra color for longer lists
+];
+
+
+
 
 export default function ShapesPage() {
-  const navigate = useNavigate();
-  const categoryId = 'shapes';
-  
-  // TRACING_ITEMS se shapes list fetch karein
-  const unsortedItems = TRACING_ITEMS[categoryId].items; 
-  
-  // --- FIX: Items ko Alphabetical order mein sort karein ---
-  // A, B, C... sequence (e.g., Circle, Diamond, Square...)
-  const items = [...unsortedItems].sort((a, b) => a.localeCompare(b));
-  
-  const completedItems = getCompletedItems();
+    const navigate = useNavigate();
+    const categoryId = 'shapes';
+    
+    // TRACING_ITEMS se shapes list fetch karein
+    const unsortedItems = TRACING_ITEMS[categoryId].items; 
+    
+    // Items ko Alphabetical order mein sort karein
+    const items = [...unsortedItems].sort((a, b) => a.localeCompare(b));
+    
+    
 
-  const handleItemClick = (item) => {
-    // Sahi trace path par navigate karein: /trace/shapes/circle
-    // Items ko lowercase mein bhejna zaroori hai
-    navigate(`/trace/${categoryId}/${item.toLowerCase()}`);
-  };
+    const handleItemClick = (item) => {
+        // Sahi trace path par navigate karein: /trace/shapes/circle
+        navigate(`/trace/${categoryId}/${item.toLowerCase()}`);
+    };
 
-  return (
-    <div className="min-h-screen bg-indigo-100 p-6">
-      <header className="text-center py-6 mb-10">
-        <h1 className="text-5xl md:text-6xl font-extrabold text-indigo-800 tracking-tight drop-shadow-md">
-          Trace the Shapes!
-        </h1>
-        <p className="text-xl text-indigo-600 mt-2">
-          Click on a shape to start tracing.
-        </p>
-      </header>
- <div className="text-center mt-12">
-        <button
-          onClick={() => navigate("/categories")}
-          className="px-6 py-3 bg-violet-600 text-white rounded-lg shadow-lg hover:bg-violet-700 transition font-medium"
-        >
-          ← Back to Categories
-        </button>
-      </div>
-      <div className="flex flex-wrap justify-center gap-2 max-w-6xl mx-auto">
-        {items.map((item) => (
-          <TracingCard
-            key={item}
-            item={item} 
-            onClick={() => handleItemClick(item)}
-            isCompleted={completedItems.includes(item)}
-          />
-        ))}
-      </div>
-
-     
-    </div>
-  );
+    return (
+        // relative class for NavBar positioning
+        <div className="min-h-screen relative bg-gradient-to-br from-indigo-100 to-cyan-50 p-6">
+            
+            {/* 1. NavBar Add Karein */}
+            <NavBar themeColor="text-indigo-800" />
+            
+            {/* 2. Content ko NavBar ke neechay dhakelne ke liye div aur pt-5 */}
+            <div className="pt-5"> 
+                <header className="text-center py-6 mb-10">
+                    <h1 className="text-5xl md:text-5xl font-extrabold text-indigo-800 tracking-tight drop-shadow-md">
+                        Trace the Shapes
+                    </h1>
+                    <p className="text-xl text-indigo-600 mt-5">
+                        Click on a shape to start tracing.
+                    </p>
+                </header>
+                
+                {/* Shapes Cards List */}
+                <div className="flex flex-wrap justify-center gap-2 max-w-7xl mx-auto">
+                    {items.map((item, index) => (
+                        <TracingCard
+                            key={item}
+                            item={item} 
+                            // 3. Color: index ke mutabiq SHAPE_COLORS array se color uthaya gaya hai
+                            colorClass={SHAPE_COLORS[index % SHAPE_COLORS.length]}
+                            onClick={() => handleItemClick(item)}
+                          
+                        />
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
 }

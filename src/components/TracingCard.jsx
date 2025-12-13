@@ -1,3 +1,4 @@
+// src/components/TracingCard.jsx
 import React from 'react';
 
 export default function TracingCard({ item, title, onClick, colorClass, isCompleted }) {
@@ -27,12 +28,13 @@ export default function TracingCard({ item, title, onClick, colorClass, isComple
         // Single digit/letter remains defaultIconSize
     }
 
-
     const completionClass = isCompleted 
         ? 'border-4 border-cyan-400 shadow-inner' 
         : 'border-2 border-white/30';
 
     let finalColorClass = colorClass;
+    
+    // Category card nahi hai, toh color randomize karein
     if (!isCategory) {
         const colors = [
             'bg-indigo-600', 
@@ -41,8 +43,15 @@ export default function TracingCard({ item, title, onClick, colorClass, isComple
             'bg-amber-600', 
             'bg-purple-600'
         ];
-        const charCode = typeof item === 'string' ? item.charCodeAt(0) : 0;
-        finalColorClass = colors[charCode % colors.length] + ' hover:opacity-90';
+        // CharCode ya value ko unique color dene ke liye use karein
+        const itemKey = (String(item).match(/\d+/g) ? parseInt(item) : String(item).charCodeAt(0));
+        
+        finalColorClass = colors[itemKey % colors.length] + ' hover:opacity-90';
+    } else {
+        // Agar category card hai, aur colorClass define nahi hai toh default de dein
+        if (!finalColorClass) {
+             finalColorClass = 'bg-gray-600 hover:bg-gray-700';
+        }
     }
 
 
