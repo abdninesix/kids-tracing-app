@@ -17,6 +17,15 @@ const CATEGORIES = [
     colorClass: 'bg-teal-600 hover:bg-teal-700',
     path: '/counting' 
   },
+  // --- NEW CATEGORY ADDED: URDU HUROOF ---
+  { 
+    id: 'urdu', 
+    title: 'حروف تہجی (Urdu)', 
+    icon: 'أبج', // Display icon using the first few Urdu/Arabic characters
+    colorClass: 'bg-green-600 hover:bg-green-700', // Naya rang diya gaya hai
+    path: '/urdu' // Ye path aapki routing mein bhi hona chahiye
+  },
+  // --- EXISTING CATEGORY ---
   { 
     id: 'shapes', 
     title: 'Shapes', 
@@ -45,19 +54,19 @@ export default function CategoriesPage() {
         </p>
       </header>
 
-      <div className="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto">
-        {CATEGORIES.map((category) => (
-          <TracingCard
+     <div className="flex flex-nowrap justify-start gap-6 max-w-full mx-auto overflow-x-scroll p-4">
+    {CATEGORIES.map((category) => (
+        <TracingCard
             key={category.id}
             item={category.icon}
             title={category.title}
             colorClass={category.colorClass}
             // Yahan par hum poora category object pass kar rahe hain
             onClick={() => handleCategoryClick(category)} 
-          />
-        ))}
-      </div>
-       <div className="text-center mt-12">
+        />
+    ))}
+</div>
+      <div className="text-center mt-12">
         <button
           onClick={() => navigate("/")}
           className="px-6 py-3 bg-violet-600 text-white rounded-lg shadow-lg hover:bg-violet-700 transition font-medium"
