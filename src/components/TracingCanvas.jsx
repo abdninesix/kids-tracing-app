@@ -51,12 +51,13 @@ const PATH_DATA = {
 
   20: "M75 95 C75 65 115 55 135 65 C155 75 155 105 145 125 L105 295 L105 315 L165 315 M220 155 C220 225 200 255 170 255 C140 255 120 225 120 155 C120 85 140 55 170 55 C200 55 220 85 220 155 Z",
   // --- SHAPES ---
-  Circle: "M150 85 C215 85 235 135 235 185 C235 235 215 285 150 285 C85 285 65 235 65 185 C65 135 85 85 150 85 Z",
- Square: "M75 75 L235 75 L235 235 L75 235 Z",
+  Circle:
+    "M150 85 C215 85 235 135 235 185 C235 235 215 285 150 285 C85 285 65 235 65 185 C65 135 85 85 150 85 Z",
+  Square: "M75 75 L235 75 L235 235 L75 235 Z",
   Triangle: "M150 65 L225 295 L75 295 Z",
   Star: "M150 65 L170 135 L245 145 L190 195 L205 270 L150 235 L95 270 L110 195 L55 145 L130 135 Z",
   Diamond: "M150 65 L225 185 L150 305 L75 185 Z",
- Rectangle: "M50 100 L270 100 L270 220 L50 220 Z",
+  Rectangle: "M50 100 L270 100 L270 220 L50 220 Z",
   Oval: "M150 65 C215 65 215 305 150 305 C85 305 85 65 150 65 Z",
   Arrow: "M85 185 L215 185 M175 145 L215 185 L175 225",
   Heart:
@@ -273,35 +274,24 @@ export default function TracingCanvas({
   const getTitle = () => {
     if (categoryId === "letters") return "Letter";
     if (categoryId === "numbers") return "Number";
-  
+
     if (categoryId === "shapes") return "Shape";
     return "Item";
   };
 
   return (
-    <div
-      className="max-w-sm mx-auto p-2 bg-white/90 backdrop-blur-sm rounded-3xl shadow-2xl shadow-indigo-300 w-full"
-      style={{ maxWidth: `${width + 40}px` }}
-    >
+    <div className="w-full px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 mx-auto">
       <div
-        className={`relative w-full overflow-hidden ${
+        className={`relative w-full max-w-4xl mx-auto aspect-[300/330] bg-white/90 rounded-3xl  overflow-hidden ${
           completed
-            ? "border-green-500 shadow-green-400/70 border-8"
+            ? "border-green-500 border-8"
             : "border-cyan-400 border-4"
-        }`}
-        style={{
-          height: `${height}px`,
-          width: `${width}px`,
-          margin: "0 auto",
-          borderRadius: "8px",
-          transition: "all 0.3s ease",
-        }}
+        } `}
       >
         <svg
           ref={svgRef}
-          // ViewBox ko 350x350 se 300x400 kar diya gaya hai taaki path data align ho
           viewBox="30 30 260 330"
-          className="w-full h-full bg-white cursor-crosshair"
+          className="absolute inset-0 w-full h-full cursor-crosshair"
           onMouseDown={startDraw}
           onMouseMove={moveDraw}
           onMouseUp={endDraw}
@@ -375,7 +365,7 @@ export default function TracingCanvas({
         )}
       </div>
 
-      <div className="flex justify-between w-full mt-6">
+      <div className="flex justify-between w-full mt-4 mb-2">
         <button
           onClick={resetCanvas}
           className="flex items-center justify-center px-4 py-3 bg-red-500 text-white font-bold rounded-xl shadow-lg shadow-red-300/70 hover:bg-red-600 transition duration-150 transform hover:scale-[1.03] flex-grow mr-2 active:scale-[0.98]"
