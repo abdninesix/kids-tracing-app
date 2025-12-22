@@ -11,6 +11,11 @@ import ShapesPage from './pages/ShapesPage';
 // --- Naya Component Import Karein ---
 import UrduPage from './pages/UrduPage'; // Assuming you have an UrduPage component
 import TracePage from './pages/TracePage'; 
+import LearningHub from './pages/LearningHub';
+import LearningAlphabets from './pages/LearningAlphabets';
+import LearningNumbers from './pages/LearningNumbers';
+import MatchingHub from './pages/MatchingHub';
+import MatchingGame from './pages/MatchingGame';
 
 function App() {
     return (
@@ -21,14 +26,16 @@ function App() {
                 
                 {/* Level 2: Categories Selection */}
                 <Route path="/categories" element={<CategoriesPage />} /> 
-                
-                {/* Level 3: Dedicated Item Lists */}
+                <Route path="/learning-hub" element={<LearningHub />} />
+  <Route path="/learning/alphabets" element={<LearningAlphabets />} />
+  <Route path="/learning/numbers" element={<LearningNumbers />} />
                 <Route path="/letters" element={<LettersPage />} /> 
                 <Route path="/counting" element={<CountingPage />} /> 
                 <Route path="/shapes" element={<ShapesPage />} /> 
                 {/* --- Naya Route Urdu Huroof ke liye --- */}
                 <Route path="/urdu" element={<UrduPage />} /> 
-                
+                <Route path="/matching-hub" element={<MatchingHub />} />
+<Route path="/matching/:type" element={<MatchingGame />} />
                 {/* Level 4: Tracing Canvas (Same structure) */}
                 <Route path="/trace/:categoryId/:item" element={<TracePage />} /> 
             </Routes>

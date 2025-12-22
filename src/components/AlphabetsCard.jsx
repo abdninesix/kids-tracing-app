@@ -1,7 +1,6 @@
 import React from 'react';
 
 export default function AlphabetCard({ letter, onClick, isCompleted }) {
-  // Safety check: Agar letter na ho to crash na kare
   if (!letter) return null;
 
   const colors = [
@@ -12,12 +11,10 @@ export default function AlphabetCard({ letter, onClick, isCompleted }) {
     'from-blue-600 to-indigo-800'
   ];
   
-  // charCodeAt safety logic
   const charCode = typeof letter === 'string' ? letter.charCodeAt(0) : 0;
   const colorIndex = charCode % colors.length;
   const colorClass = colors[colorIndex];
 
-  // Dynamic text size for symmetry
   const textSize = letter.length > 2 ? 'text-lg md:text-xl' : 'text-4xl md:text-6xl';
 
   return (
@@ -39,8 +36,7 @@ export default function AlphabetCard({ letter, onClick, isCompleted }) {
           ⭐
         </span>
       )}
-
-      <div className="absolute bottom-3 w-8 h-1 bg-black/20 rounded-full group-hover:w-12 transition-all" />
+      {/* Black line div removed from here */}
     </div>
   );
 }

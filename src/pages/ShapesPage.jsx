@@ -12,7 +12,7 @@ export default function ShapesPage() {
         <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-indigo-200 via-cyan-100 to-purple-200 p-4 md:p-8">
             <NavBar themeColor="text-indigo-900" backPath="/categories" />
             
-            <header className="text-center mt-5 mb-8">
+            <header className="text-center mt-3 mb-8">
                 <h1 className="text-4xl md:text-6xl font-extrabold text-indigo-900 tracking-tight drop-shadow-md">
                     Trace the Shapes
                 </h1>

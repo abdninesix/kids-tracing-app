@@ -1,21 +1,20 @@
+import React from 'react';
+
 export default function TracingCard({ title, icon, onClick, colorClass }) {
   return (
     <div
       onClick={onClick}
-      className={`group relative h-52 flex flex-col items-center justify-center 
-                 bg-gradient-to-b ${colorClass} text-white rounded-3xl shadow-xl 
-                 transform transition-all duration-300 ease-out
-                 hover:-translate-y-2 hover:shadow-2xl active:scale-95 cursor-pointer 
-                 border-b-8 border-black/20`}
+      className="bg-white/60 backdrop-blur-lg p-6 rounded-[40px] shadow-xl flex flex-col items-center border border-white/60 cursor-pointer hover:scale-105 transition-all duration-300 group w-full"
     >
-      <div className="absolute inset-0 bg-white/10 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-      <span className="text-6xl font-black drop-shadow-lg mb-3 transform group-hover:scale-110 transition-transform">
-        {icon}
-      </span>
-      <span className="text-2xl font-bold tracking-wide drop-shadow-md">
-        {title}
-      </span>
-      <div className="mt-2 w-12 h-1.5 bg-white/40 rounded-full group-hover:w-20 transition-all" />
+      <div className="mb-4 bg-white rounded-full p-6 shadow-inner group-hover:rotate-12 transition-transform text-center">
+        <span className={`text-5xl font-black bg-gradient-to-r ${colorClass} bg-clip-text text-transparent`}>
+          {icon}
+        </span>
+      </div>
+      <h2 className="text-2xl font-bold text-indigo-900 mb-4">{title}</h2>
+      <button className={`w-full py-3 bg-gradient-to-r ${colorClass} text-white font-bold rounded-2xl shadow-md uppercase`}>
+        Start
+      </button>
     </div>
   );
 }

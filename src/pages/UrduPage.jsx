@@ -20,32 +20,36 @@ export default function UrduPage() {
         const fileName = URDU_AUDIO_MAP[item];
         if (fileName) {
             const audio = new Audio(`/sounds/${fileName}.mp3`);
-            audio.play().catch((err) => {
-                console.error("Voice play failed. Check if file exists in public/sounds/", err);
-            });
+            audio.play().catch((err) => console.error("Audio error:", err));
         }
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-indigo-200 via-cyan-100 to-purple-200 p-4 md:p-8">
-            <NavBar themeColor="text-indigo-900" backPath="/categories"/>
+        <div className="min-h-screen flex flex-col items-center bg-gradient-to-br from-indigo-200 via-cyan-100 to-purple-200 p-4 md:p-8 overflow-x-hidden">
+            {/* Urdu Font Import */}
+            <style>
+                {`@import url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400..700&display=swap');
+                  .urdu-font { font-family: 'Noto Nastaliq Urdu', serif; }`}
+            </style>
+
+            <NavBar themeColor="text-indigo-900" backPath="/learning-hub"/>
             
-            <header className="text-center mt-5 mb-8">
-                <h1 className="text-4xl md:text-6xl font-extrabold text-indigo-900 tracking-tight drop-shadow-md">
-                    حروف تہجی سیکھیں
+            <header className="text-center mt-6 mb-10 urdu-font">
+                <h1 className="text-5xl md:text-6xl font-extrabold text-indigo-900 drop-shadow-md mb-4">
+                    اردو حروفِ تہجی
                 </h1>
-                <p className="text-lg text-indigo-700 font-semibold mt-2">
-                    کسی بھی حرف پر کلک کریں اور آواز سنیں!
-                </p>
+                
             </header>
+
             <div className="bg-white/30 backdrop-blur-xl p-6 md:p-10 rounded-[40px] shadow-2xl max-w-6xl w-full border border-white/40 mb-10" dir="rtl">
                 <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
                     {items.map((item) => (
-                        <AlphabetCard
-                            key={item}
-                            letter={item} 
-                            onClick={() => handleItemClick(item)}
-                        />
+                        <div key={item} className="urdu-font">
+                            <AlphabetCard
+                                letter={item} 
+                                onClick={() => handleItemClick(item)}
+                            />
+                        </div>
                     ))}
                 </div>
             </div>
