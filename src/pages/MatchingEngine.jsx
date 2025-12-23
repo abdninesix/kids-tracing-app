@@ -16,8 +16,8 @@ export default function MatchingEngine({ leftItems = [], rightItems = [] }) {
     const playSound = (isSuccess) => {
         try {
             const audio = new Audio(isSuccess ? "/sounds/success.mp3" : "/sounds/tryagain.mp3");
-            audio.play().catch(e => console.log("Audio error"));
-        } catch (e) { console.log(e); }
+            audio.play().catch(() => {});
+        } catch (e) {}
     };
 
     useEffect(() => {
@@ -42,10 +42,12 @@ export default function MatchingEngine({ leftItems = [], rightItems = [] }) {
         if (!ctx) return;
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
         ctx.lineCap = 'round';
-        ctx.lineWidth = 6;
+        ctx.lineWidth = 6; // Thinner line for better look
 
         completedLines.forEach(line => {
             ctx.strokeStyle = '#22c55e';
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = '#22c55e';
             ctx.beginPath();
             ctx.moveTo(line.x1, line.y1); ctx.lineTo(line.x2, line.y2);
             ctx.stroke();
@@ -53,11 +55,11 @@ export default function MatchingEngine({ leftItems = [], rightItems = [] }) {
 
         if (currentLine) {
             ctx.strokeStyle = '#6366f1';
-            ctx.setLineDash([5, 5]);
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#6366f1';
             ctx.beginPath();
             ctx.moveTo(currentLine.startX, currentLine.startY); ctx.lineTo(currentLine.endX, currentLine.endY);
             ctx.stroke();
-            ctx.setLineDash([]);
         }
     };
 
@@ -90,44 +92,63 @@ export default function MatchingEngine({ leftItems = [], rightItems = [] }) {
             setMatches(prev => ({ ...prev, [currentLine.id]: true }));
             setFeedback('success');
             playSound(true);
-            if (Object.keys(matches).length + 1 === leftItems.length) confetti();
+            if (Object.keys(matches).length + 1 === leftItems.length) confetti({ particleCount: 100, spread: 70 });
         } else {
             setFeedback('fail');
             playSound(false);
         }
         setCurrentLine(null);
         setIsDragging(false);
-        setTimeout(() => setFeedback(null), 1500);
+        setTimeout(() => setFeedback(null), 1200);
     };
 
     return (
-        <div ref={containerRef} onMouseMove={handleMove} onTouchMove={handleMove} className="relative max-w-4xl mx-auto p-10 bg-white/50 backdrop-blur-md rounded-[40px] shadow-xl border-4 border-white overflow-hidden touch-none">
-            <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none" />
+        <div className="w-full max-w-3xl flex flex-col items-center"> {/* Max width reduced */}
             <AnimatePresence>
                 {feedback && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`absolute inset-0 flex items-center justify-center z-50 ${feedback === 'success' ? 'bg-green-500/10' : 'bg-red-500/10'} pointer-events-none`}>
-                        <motion.div initial={{ scale: 0.5 }} animate={{ scale: 1 }} className={`px-8 py-4 rounded-2xl shadow-2xl border-4 ${feedback === 'success' ? 'bg-white border-green-500 text-green-600' : 'bg-white border-red-500 text-red-600'} text-3xl font-black`}>
-                            {feedback === 'success' ? 'Great Job! ⭐' : '❌ Oops! Try Again!'}
-                        </motion.div>
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}
+                        className="fixed top-1/3 z-50">
+                        <div className={`px-8 py-4 rounded-2xl shadow-xl border-4 bg-white font-black text-2xl
+                            ${feedback === 'success' ? 'border-green-400 text-green-500' : 'border-red-400 text-red-500'}`}>
+                            {feedback === 'success' ? 'Great! ⭐' : 'Try Again! ❌'}
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
-            <div className="grid grid-cols-2 gap-32 relative z-10">
-                <div className="flex flex-col gap-4">
-                    {leftItems.map(item => (
-                        <div key={item.id} className="relative flex items-center">
-                            <div onMouseDown={(e) => handleStart(item, e)} onTouchStart={(e) => handleStart(item, e)} className={`flex-1 h-16 flex items-center justify-center text-3xl font-black rounded-2xl border-b-4 transition-all ${matches[item.id] ? 'bg-green-400 border-green-600 text-white' : 'bg-white border-indigo-200 shadow-sm'}`}>{item.content}</div>
-                            <div className={`w-3 h-3 rounded-full absolute -right-1.5 z-20 ${matches[item.id] ? 'bg-green-600' : 'bg-indigo-400'}`} />
-                        </div>
-                    ))}
-                </div>
-                <div className="flex flex-col gap-4">
-                    {shuffledRight.map(item => (
-                        <div key={item.id} className="relative flex items-center">
-                            <div className={`w-3 h-3 rounded-full absolute -left-1.5 z-20 ${matches[item.id] ? 'bg-green-600' : 'bg-indigo-400'}`} />
-                            <div onMouseUp={(e) => handleEnd(item, e)} onTouchEnd={(e) => handleEnd(item, e)} className={`flex-1 h-16 flex items-center justify-center text-3xl font-black rounded-2xl border-b-4 transition-all ${matches[item.id] ? 'bg-green-100 text-green-700 opacity-50' : 'bg-white border-indigo-200 shadow-sm'}`}>{item.match}</div>
-                        </div>
-                    ))}
+
+            <div ref={containerRef} onMouseMove={handleMove} onTouchMove={handleMove}
+                className="relative w-full bg-white/50 backdrop-blur-sm rounded-[40px] border-4 border-white shadow-xl p-8 md:p-12 min-h-[450px] flex items-center touch-none overflow-hidden">
+                
+                <canvas ref={canvasRef} className="absolute inset-0 pointer-events-none z-20" />
+
+                <div className="grid grid-cols-2 w-full gap-x-20 md:gap-x-32 relative z-10">
+                    <div className="flex flex-col justify-center gap-4"> {/* Compact Gap */}
+                        {leftItems.map(item => (
+                            <div key={item.id} className="relative">
+                                <motion.div onMouseDown={(e) => handleStart(item, e)} onTouchStart={(e) => handleStart(item, e)}
+                                    className={`h-14 md:h-16 w-full flex items-center justify-center text-3xl font-black rounded-2xl border-b-4 transition-all cursor-pointer select-none
+                                    ${matches[item.id] ? 'bg-green-400 border-green-600 text-white' : 'bg-white border-indigo-100 text-indigo-900 shadow-sm hover:shadow-md'}`}>
+                                    {item.content}
+                                </motion.div>
+                                <div className={`w-4 h-4 rounded-full absolute -right-2 top-1/2 -translate-y-1/2 border-2 border-white shadow-sm z-30
+                                    ${matches[item.id] ? 'bg-green-500' : 'bg-indigo-400'}`} />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="flex flex-col justify-center gap-4"> {/* Compact Gap */}
+                        {shuffledRight.map(item => (
+                            <div key={item.id} className="relative">
+                                <div className={`w-4 h-4 rounded-full absolute -left-2 top-1/2 -translate-y-1/2 border-2 border-white shadow-sm z-30
+                                    ${matches[item.id] ? 'bg-green-500' : 'bg-indigo-400'}`} />
+                                <motion.div onMouseUp={(e) => handleEnd(item, e)} onTouchEnd={(e) => handleEnd(item, e)}
+                                    className={`h-14 md:h-16 w-full flex items-center justify-center text-3xl font-black rounded-2xl border-b-4 transition-all select-none
+                                    ${matches[item.id] ? 'bg-green-50 text-green-200 border-green-100' : 'bg-white border-indigo-100 text-indigo-900 shadow-sm'}`}>
+                                    {item.match}
+                                </motion.div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
